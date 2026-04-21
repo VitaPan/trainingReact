@@ -4,37 +4,45 @@ import './App.css'
 function App() {
     const [users, setUsers] = useState([])
     const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(true);
 
     const fetchUsers = () => {
+        setLoading(true);
         fetch('https://jsonplaceholder.typicode.com/todos')
             .then(res => res.json())
             .then(
                 (result) => {
-                    setUsers(result)
+                    setUsers(result);
+                    setLoading(false);
                 },
                 (error) => {
-                    setError(error)
+                    setError(error);
+                    setLoading(false);
                 }
             )
     }
 
     useEffect(() => {
-        fetchUsers()
+        fetchUsers();
     }, [])
 
     return (
         <>
-            <button onClick={fetchUsers}>Обновить</button>
+            {loading ? (
+                <div>Загрузка...</div>
+            ) : (
+                <>
+                    <button onClick={fetchUsers}>Обновить</button>
 
-            {error && <p>Ошибка</p>}
+                    {error && <p>Ошибка</p>}
 
-            <ul>
-                {users.map(user => (
-                    <li key={user.id}>
-                        {user.title}
-                    </li>
-                ))}
-            </ul>
+                    <ul>
+                        {users.map(user => (
+                            <li key={user.id}>{user.title}</li>
+                        ))}
+                    </ul>
+                </>
+            )}
         </>
     )
 }
