@@ -7,9 +7,15 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     const fetchUsers = () => {
+        setError(null);
         setLoading(true);
         fetch('https://jsonplaceholder.typicode.com/todos')
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Ошибка запроса')
+                }
+                return res.json()
+            })
             .then(
                 (result) => {
                     setUsers(result);
@@ -28,21 +34,24 @@ function App() {
 
     return (
         <>
-            {loading ? (
-                <div>Загрузка...</div>
-            ) : (
-                <>
-                    <button onClick={fetchUsers}>Обновить</button>
+            {
+                error ? (
+                        <p>Ошибка загрузки: {error?.message || 'что-то пошло не так'}</p>
+                ) :
+                    loading ? (
+                        <div>Загрузка...</div>
+                    ) : (
+                        <>
+                            <button onClick={fetchUsers}>Обновить</button>
 
-                    {error && <p>Ошибка</p>}
-
-                    <ul>
-                        {users.map(user => (
-                            <li key={user.id}>{user.title}</li>
-                        ))}
-                    </ul>
-                </>
-            )}
+                            <ul>
+                                {users.map(user => (
+                                    <li key={user.id}>{user.title}</li>
+                                ))}
+                            </ul>
+                        </>
+                    )
+            }
         </>
     )
 }
