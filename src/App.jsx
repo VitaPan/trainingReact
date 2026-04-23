@@ -5,6 +5,7 @@ function App() {
     const [users, setUsers] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true);
+    const [showAll, setShowAll] = useState(false)
 
     const fetchUsers = () => {
         setError(null);
@@ -43,9 +44,11 @@ function App() {
                     ) : (
                         <>
                             <button onClick={fetchUsers}>Обновить</button>
+                            <button onClick={() => setShowAll(false)}>Показать 10</button>
+                            <button onClick={() => setShowAll(true)}>Показать всех</button>
 
                             <ul>
-                                {users.map(user => (
+                                {(showAll ? users : users.slice(0, 10)).map(user => (
                                     <li key={user.id}>{user.title}</li>
                                 ))}
                             </ul>
